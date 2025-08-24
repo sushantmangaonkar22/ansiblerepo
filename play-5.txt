@@ -1,0 +1,57 @@
+--- #To start stop tomcat service
+
+- hosts: 172.31.15.245
+  connection: ssh
+  user: ansible
+  gather_facts: false
+  become: yes
+
+  tasks:
+    - name: task-1 start tomcat
+      shell: nohup ./startup.sh
+      args:
+        chdir: /home/ansible/project1/apache-tomcat-9.0.75/bin
+
+    - name: task-2 check tomcat service status
+      shell: ps -ef | grep tomcat
+      register: abc
+
+    - name: task-3 print service status
+      debug:
+        var: abc.stdout
+
+    - name: task-4 Ping the host
+      ping:
+      register: ping_result
+      retries: 5
+      delay: 1
+
+    - name: task-5 Print ping results
+      debug:
+        var: ping_result
+                
+    - name: Access Tomcat via Chrome browser
+      uri:
+        url: "http://{{ ansible_host }}:8080/"
+        method: GET
+        status_code: 200
+      register: tomcat_check
+
+    - name: Print Tomcat check result
+      debug:
+        var: tomcat_check
+		
+	- name: task-6 delay of 10 seconds
+      pause:
+        seconds: 10
+
+    - name: task-7 stop tomcat service
+      shell: ./shutdown.sh
+      args:
+        chdir: /home/ansible/project1/apache-tomcat-9.0.75/bin
+		
+		
+		
+		
+		
+		http://3.135.246.134:8080/

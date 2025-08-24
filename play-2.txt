@@ -1,0 +1,41 @@
+---   //PLAYBOOK FOR START AND STOP SERVICES
+
+- name: Start/Stop Service Playbook
+  hosts: 172.31.15.245
+  become: yes
+  vars:
+    service_name: "apache2"
+
+  tasks:
+    - name: Start service    //for start apache service
+      service:
+        name: "{{ service_name }}"
+        state: started
+      register: service_started
+      when: service_started is not defined or not service_started.changed
+      notify:
+        - Print Start Message
+        - Pause for 30 seconds
+	
+	- name: Pause for 30 seconds
+      pause:
+        seconds: 30
+      when: service_started is not defined or not service_started.changed
+		
+	- name: to check httpd status
+	  shell: |
+	    sh -x systemctl httpd status
+		
+	  register: abc
+	  	  
+	- name: Print Start Message
+      debug:
+        var: abc.stdout
+	  
+    - name: Stop service     //for stop apache service
+      service:yu
+        name: "{{ service_name }}"
+        state: stopped
+      register: service_stopped
+      when: service_stopped is not defined or not service_stopped.changed
+      notify: Print Stop Message

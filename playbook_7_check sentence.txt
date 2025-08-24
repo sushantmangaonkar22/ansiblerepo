@@ -1,0 +1,28 @@
+---
+- name: Search YAML file for a specific line
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    yaml_file_path: "/etc/newrelic-infra.yml"
+    search_line: "enable_process_metrics: true"
+
+  tasks:
+    - name: Read the YAML file
+      slurp:
+        src: "{{ yaml_file_path }}"
+      register: yaml_file_content
+
+    - name: Convert YAML file content to string
+      set_fact:
+        yaml_content: "{{ yaml_file_content.content | b64decode }}"
+
+    - name: Search for the line in the YAML file
+      debug:
+        msg: "{{ search_line }}"
+      when: search_line in yaml_content
+
+    - name: Display error message if line not found
+      debug:
+        msg: "Line not found in the YAML file"
+      when: search_line not in yaml_content

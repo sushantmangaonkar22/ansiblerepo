@@ -1,0 +1,22 @@
+---
+- name: Find sentence in a file
+  hosts: <target_hosts>
+  become: true
+
+  vars:
+  - file_path: "/etc/newrelic-infra.yml"
+    sentence: "enable_process_metrics: true"
+
+  tasks:
+  - name: Find sentence in file
+    lineinfile:
+    path: "{{ file_path }}"
+    line: "{{ sentence }}"
+    state: present
+    register: result
+
+  - name: Display search result
+    debug:
+      var: result
+	  
+	  

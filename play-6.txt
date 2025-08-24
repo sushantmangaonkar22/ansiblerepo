@@ -1,0 +1,31 @@
+---
+- name: Check URL Accessibility
+  hosts: 172.31.15.245
+  gather_facts: false
+
+  tasks:
+    - name: check url
+      ansible.builtin.uri:
+        url: http://18.189.170.186:8080/
+        validate_certs: no
+        register: test_files
+        ignore_errors: yes
+
+    - name: print message
+      debug:
+        var: test_files
+		
+	- name: smoke test output
+	  shell: |
+	    echo $?
+	  register: test_files1
+
+    - name: print message
+      debug:
+        msg: "server is up "
+      when: test_files.status == 200
+
+    - name: print message
+      debug:
+        msg: "server is down "
+      when: test_files.status != 200

@@ -1,0 +1,23 @@
+---
+- name: Find sentence in a file
+  hosts: 172.31.15.245
+  connection: ssh
+  become: true
+
+  vars:
+    - sentence: "enable_process_metrics: true"
+
+  tasks:
+    - name: Shell command to read the file
+      shell: "cat /home/ansible/newrelic-infra.yml"
+      register: file_output
+
+    - name: Debug message when sentence is present
+      debug:
+        msg: "Sentence present in file_output.stdout"
+      when: sentence in file_output.stdout
+
+    - name: Fail when sentence is not present
+      fail:
+        msg: "Sentence not present in file_output.stdout"
+      when: sentence not in file_output.stdout

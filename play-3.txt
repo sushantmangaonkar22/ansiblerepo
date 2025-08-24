@@ -1,0 +1,20 @@
+name: task-1 run script on node-1
+      shell: |
+        sh -x /home/ansible/project1/apache-tomcat-9.0.75/bin/startup.sh
+      ignore_errors: true
+      register: abc
+
+
+    - name: to print
+      debug: 
+        var: abc    
+        #become_user: ansible
+        # become: true
+
+    - name: task-2 run script on node-2
+      shell: | 
+        ./startup.sh
+        chdir: /home/ansible/project1/apache-tomcat-9.0.75/bin/
+      ignore_errors: true
+        # become_user: ansible
+        # become: true
